@@ -131,6 +131,9 @@ button:disabled { opacity: 0.45; cursor: default; box-shadow: none; transform: n
   z-index: 50;
   padding: 20px;
 }
+.modal-backdrop[hidden] {
+  display: none;
+}
 .modal-box {
   background: var(--cream);
   color: var(--ink);
