@@ -4,6 +4,8 @@ A small suite of ad-free, distraction-free games — starting with Klondike
 Solitaire — built for people who don't want to gamble with fake "Your PC is
 infected" popups just to play a game of cards.
 
+**Play it now, no install:** https://dread5335.github.io/Old_People_Collection/
+
 See `CLAUDE.md` for the full project brief (constraints, architecture,
 roadmap) — that file is written for handing this project to Claude Code.
 
