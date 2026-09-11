@@ -53,17 +53,29 @@ quiet-games-suite/
     solitaire/
       index.html
       style.css
-      game.js               # fully playable, this is the reference implementation
+      game.js               # fully playable, the original reference implementation
+    minesweeper/
+      index.html
+      style.css
+      game.js               # fully playable
   test/
-    smoke.js                # headless jsdom smoke test
+    smoke.js                # headless jsdom smoke test (solitaire)
+    minesweeper-smoke.js     # headless jsdom smoke test (minesweeper)
   README.md
 ```
 
 - **Solitaire (Klondike) is done and playable.** Draw pile, waste,
   4 foundations, 7 tableau columns, undo, move counter, win detection,
   "How to Play" modal, new-game confirmation modal, large-text toggle.
-- **Mahjong and Minesweeper are not started.** They're listed as
-  greyed-out "Coming soon" tiles on the hub page.
+- **Minesweeper is done and playable.** Easy/Medium/Hard difficulty
+  picker (9×9/10, 12×12/24, 16×16/40), flood-fill reveal, a "Flag Mode"
+  toggle button in place of right-click/long-press (accessible on touch),
+  double-tap chording, win/lose modals, large-text toggle. Deliberately
+  lets you **Undo a mine reveal** — an accidental tap shouldn't end the
+  game for this audience, so Undo isn't purely cosmetic here the way it
+  might be in a "real" Minesweeper.
+- **Mahjong is not started.** It's still listed as a greyed-out
+  "Coming soon" tile on the hub page.
 - **No persistence yet.** Refreshing the page loses the current game.
   `localStorage` would be fine to add (it's on-device, not tracking) but
   hasn't been built.
@@ -138,10 +150,10 @@ require a privacy policy URL even for apps that collect nothing).
 
 ## Suggested next steps
 
-1. Add Minesweeper under `games/minesweeper/`, reusing `shared/theme.css`
-   and the `state` + `render()` + `snapshot()/undo()` pattern above.
-2. Add Mahjong (tile-matching) under `games/mahjong/`.
-3. Add a tile for each on the hub `index.html` (remove the `soon` class,
-   point the link at the new game).
-4. Consider `localStorage`-based "resume last game" — on-device only, so
+1. Add Mahjong (tile-matching) under `games/mahjong/`, reusing
+   `shared/theme.css` and the `state` + `render()` + `snapshot()/undo()`
+   pattern above.
+2. Add a tile for it on the hub `index.html` (remove the `soon` class,
+   point the link at the new game) — same as was done for Minesweeper.
+3. Consider `localStorage`-based "resume last game" — on-device only, so
    it doesn't violate the no-tracking constraint.
