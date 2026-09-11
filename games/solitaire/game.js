@@ -361,6 +361,16 @@
     }
 
     if (selection) {
+      // Tapping the exact card that's already selected toggles it back off.
+      // Without this check, a failed double-tap-to-foundation (or just
+      // re-tapping the same card) fell through to "move selection onto
+      // this pile" — which is always invalid since the card is already
+      // there — and left `selection` stuck forever, since the only way
+      // back to selectCard() was through here.
+      if (selection.from === from && selection.pile === pile && selection.index === index) {
+        clearSelection();
+        return;
+      }
       // if same source pile clicked, treat as re-select (for tableau runs) or move-target check
       if (from === 'tableau') {
         tryMoveSelectionTo({ type: 'tableau', col: pile });
