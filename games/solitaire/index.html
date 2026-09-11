@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3">
+<title>Solitaire — Quiet Games</title>
+<link rel="stylesheet" href="../../shared/theme.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="btn back-link" href="../../index.html">&larr; Games</a>
+    <span class="brass-plate title-plate">Solitaire</span>
+    <button id="textSizeBtn" class="btn" aria-pressed="false">A+ Larger Text</button>
+  </div>
+
+  <div class="table-frame wood-frame">
+    <div class="table-felt felt">
+
+      <div class="board-row">
+        <div class="pile-group">
+          <div id="stock" class="pile stock" tabindex="0" role="button" aria-label="Draw pile. Press to draw a card."></div>
+          <div id="waste" class="pile waste" tabindex="0" role="button" aria-label="Waste pile"></div>
+        </div>
+        <div class="pile-group foundations" aria-label="Foundation piles">
+          <div class="pile foundation" data-suit="hearts"   tabindex="0" role="button" aria-label="Foundation, hearts"></div>
+          <div class="pile foundation" data-suit="diamonds" tabindex="0" role="button" aria-label="Foundation, diamonds"></div>
+          <div class="pile foundation" data-suit="clubs"    tabindex="0" role="button" aria-label="Foundation, clubs"></div>
+          <div class="pile foundation" data-suit="spades"   tabindex="0" role="button" aria-label="Foundation, spades"></div>
+        </div>
+      </div>
+
+      <div class="tableau" id="tableau" aria-label="Tableau piles">
+        <!-- 7 columns injected by JS -->
+      </div>
+
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <span id="statusMsg" role="status" aria-live="polite">Tap the draw pile to begin, or tap New Game.</span>
+    <div class="statusbar-actions">
+      <span class="counter">Moves: <span id="moveCount">0</span></span>
+      <button id="undoBtn" class="btn" disabled>Undo</button>
+      <button id="rulesBtn" class="btn">How to Play</button>
+      <button id="newGameBtn" class="btn primary">New Game</button>
+    </div>
+  </div>
+
+  <!-- Rules modal -->
+  <div id="rulesModal" class="modal-backdrop" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+      <h2 id="rulesTitle">How to Play</h2>
+      <p style="text-align:left">
+        Move cards to build the four piles in the top right, from Ace up to King, one suit at a time.<br><br>
+        On the seven piles below, cards must go down in number and switch between red and black.<br><br>
+        <strong>To move a card:</strong> tap it once, then tap where you want it to go. Tap it twice quickly to send it straight to its foundation pile, if it fits.<br><br>
+        Tap the draw pile (top left) for a new card. An empty draw pile can be tapped again to reuse the waste pile.
+      </p>
+      <div class="modal-actions">
+        <button id="closeRulesBtn" class="btn primary">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New game confirm modal -->
+  <div id="confirmModal" class="modal-backdrop" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h2 id="confirmTitle">Start a new game?</h2>
+      <p>Your current game will be lost.</p>
+      <div class="modal-actions">
+        <button id="confirmCancelBtn" class="btn">Cancel</button>
+        <button id="confirmYesBtn" class="btn primary">Start New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Win modal -->
+  <div id="winModal" class="modal-backdrop" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+      <h2 id="winTitle">You won! 🎉</h2>
+      <p id="winMsg"></p>
+      <div class="modal-actions">
+        <button id="winNewGameBtn" class="btn primary">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
