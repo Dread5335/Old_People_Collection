@@ -411,5 +411,9 @@
   function hideModal(id) { document.getElementById(id).hidden = true; }
 
   // ---------- start ----------
+  // Start with a default board rendered behind the scenes, but ask the
+  // player to pick a size/mine count before they see it — same modal
+  // "New Game" uses, just shown immediately on first visit too.
   newGame('small');
+  openDifficultyModal();
 })();
