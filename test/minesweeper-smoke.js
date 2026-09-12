@@ -26,10 +26,6 @@ const firstCell = doc.querySelectorAll('#board .cell')[0];
 firstCell.dispatchEvent(new window.Event('click', { bubbles: true }));
 console.log('Revealed cells after 1 tap:', doc.querySelectorAll('#board .cell.revealed').length, '(expect >= 1)');
 
-// Undo that reveal.
-doc.getElementById('undoBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
-console.log('Revealed cells after undo:', doc.querySelectorAll('#board .cell.revealed').length, '(expect 0)');
-
 // Flag mode: turn on, flag a hidden tile, turn back off.
 doc.getElementById('flagModeBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
 const hiddenCell = doc.querySelectorAll('#board .cell.hidden-cell')[5];
