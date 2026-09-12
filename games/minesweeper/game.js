@@ -14,16 +14,28 @@
 (function () {
   'use strict';
 
-  const DIFFICULTIES = {
-    easy:   { rows: 9,  cols: 9,  mines: 10 },
-    medium: { rows: 12, cols: 12, mines: 24 },
-    hard:   { rows: 16, cols: 16, mines: 40 },
+  const SIZES = {
+    small:  { rows: 9,  cols: 9  },
+    medium: { rows: 12, cols: 12 },
+    large:  { rows: 16, cols: 16 },
+  };
+  // Mine-count bounds per board size, roughly 6%-35% of the board so a
+  // board always stays winnable at one end and genuinely hard at the
+  // other. Step is how much each +/- tap changes the count.
+  const MINE_BOUNDS = {
+    small:  { min: 5,  max: 25, default: 10, step: 5 },
+    medium: { min: 10, max: 50, default: 25, step: 5 },
+    large:  { min: 15, max: 80, default: 40, step: 5 },
   };
 
   // ---------- state ----------
-  let state = null;        // { level, rows, cols, mineCount, cells, minesPlaced, status, flagsPlaced, revealedCount, flagMode }
+  let state = null;        // { sizeKey, rows, cols, mineCount, cells, minesPlaced, status, flagsPlaced, revealedCount, flagMode }
   let history = [];        // stack of deep-cloned states for Undo
   let lastTapInfo = null;  // for double-tap (chord) detection
+
+  // Pending selection while the difficulty modal is open, applied on "Start Game".
+  let pendingSize = 'small';
+  let pendingMines = MINE_BOUNDS.small.default;
 
   const els = {
     board: document.getElementById('board'),
@@ -99,14 +111,17 @@
   }
 
   // ---------- new game ----------
-  function newGame(level) {
-    const cfg = DIFFICULTIES[level] || DIFFICULTIES.easy;
+  function newGame(sizeKey, mineCount) {
+    const key = SIZES[sizeKey] ? sizeKey : 'small';
+    const size = SIZES[key];
+    const bounds = MINE_BOUNDS[key];
+    const mines = clamp(mineCount == null ? bounds.default : mineCount, bounds.min, bounds.max);
     state = {
-      level: DIFFICULTIES[level] ? level : 'easy',
-      rows: cfg.rows,
-      cols: cfg.cols,
-      mineCount: cfg.mines,
-      cells: makeCells(cfg.rows, cfg.cols),
+      sizeKey: key,
+      rows: size.rows,
+      cols: size.cols,
+      mineCount: mines,
+      cells: makeCells(size.rows, size.cols),
       minesPlaced: false,
       status: 'playing', // 'playing' | 'won' | 'lost'
       flagsPlaced: 0,
@@ -115,11 +130,13 @@
     };
     history = [];
     lastTapInfo = null;
-    els.board.style.gridTemplateColumns = `repeat(${cfg.cols}, var(--cell-size))`;
+    els.board.style.gridTemplateColumns = `repeat(${size.cols}, var(--cell-size))`;
     setFlagModeButton(false);
     updateStatus('Tap any tile to begin.');
     render();
   }
+
+  function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
 
   // ---------- undo support ----------
   function snapshot() {
@@ -330,24 +347,58 @@
     render();
   });
 
+  const SIZE_BUTTON_IDS = { small: 'sizeSmallBtn', medium: 'sizeMediumBtn', large: 'sizeLargeBtn' };
+
+  function selectSize(sizeKey) {
+    pendingSize = sizeKey;
+    pendingMines = MINE_BOUNDS[sizeKey].default;
+    syncDifficultyUI();
+  }
+
+  function adjustMines(delta) {
+    const bounds = MINE_BOUNDS[pendingSize];
+    pendingMines = clamp(pendingMines + delta, bounds.min, bounds.max);
+    syncDifficultyUI();
+  }
+
+  function syncDifficultyUI() {
+    Object.keys(SIZE_BUTTON_IDS).forEach(key => {
+      document.getElementById(SIZE_BUTTON_IDS[key]).setAttribute('aria-pressed', String(key === pendingSize));
+    });
+    document.getElementById('mineCountDisplay').textContent = String(pendingMines);
+    const size = SIZES[pendingSize];
+    const pct = Math.round((pendingMines / (size.rows * size.cols)) * 100);
+    const label = pct < 15 ? 'Easy' : (pct < 25 ? 'Medium' : 'Hard');
+    document.getElementById('mineDensityMsg').textContent = `${label} — about ${pct}% of tiles are mines.`;
+  }
+
   function openDifficultyModal() {
     const hasProgress = state && state.status === 'playing' &&
       (state.revealedCount > 0 || state.flagsPlaced > 0);
     document.getElementById('difficultyWarning').hidden = !hasProgress;
+    pendingSize = state ? state.sizeKey : 'small';
+    pendingMines = state ? state.mineCount : MINE_BOUNDS.small.default;
+    syncDifficultyUI();
     showModal('difficultyModal');
   }
 
   document.getElementById('newGameBtn').addEventListener('click', openDifficultyModal);
   document.getElementById('diffCancelBtn').addEventListener('click', () => hideModal('difficultyModal'));
-  document.getElementById('diffEasyBtn').addEventListener('click', () => { hideModal('difficultyModal'); newGame('easy'); });
-  document.getElementById('diffMediumBtn').addEventListener('click', () => { hideModal('difficultyModal'); newGame('medium'); });
-  document.getElementById('diffHardBtn').addEventListener('click', () => { hideModal('difficultyModal'); newGame('hard'); });
+  document.getElementById('diffStartBtn').addEventListener('click', () => {
+    hideModal('difficultyModal');
+    newGame(pendingSize, pendingMines);
+  });
+  Object.keys(SIZE_BUTTON_IDS).forEach(key => {
+    document.getElementById(SIZE_BUTTON_IDS[key]).addEventListener('click', () => selectSize(key));
+  });
+  document.getElementById('mineDownBtn').addEventListener('click', () => adjustMines(-MINE_BOUNDS[pendingSize].step));
+  document.getElementById('mineUpBtn').addEventListener('click', () => adjustMines(MINE_BOUNDS[pendingSize].step));
 
   document.getElementById('rulesBtn').addEventListener('click', () => showModal('rulesModal'));
   document.getElementById('closeRulesBtn').addEventListener('click', () => hideModal('rulesModal'));
 
-  document.getElementById('winNewGameBtn').addEventListener('click', () => { hideModal('winModal'); newGame(state.level); });
-  document.getElementById('loseNewGameBtn').addEventListener('click', () => { hideModal('loseModal'); newGame(state.level); });
+  document.getElementById('winNewGameBtn').addEventListener('click', () => { hideModal('winModal'); newGame(state.sizeKey, state.mineCount); });
+  document.getElementById('loseNewGameBtn').addEventListener('click', () => { hideModal('loseModal'); newGame(state.sizeKey, state.mineCount); });
 
   document.getElementById('textSizeBtn').addEventListener('click', (e) => {
     const on = document.body.classList.toggle('large-text');
@@ -360,5 +411,5 @@
   function hideModal(id) { document.getElementById(id).hidden = true; }
 
   // ---------- start ----------
-  newGame('easy');
+  newGame('small');
 })();
