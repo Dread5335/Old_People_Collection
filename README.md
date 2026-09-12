@@ -6,6 +6,13 @@ infected" popups just to play a game of cards.
 
 **Play it now, no install:** https://dread5335.github.io/Old_People_Collection/
 
+**Download a copy to keep and play offline:** grab the zip from the
+[latest release](../../releases/latest). Unzip it anywhere and open
+`index.html` — no internet connection is needed or used, ever. This is
+the better option for someone who isn't comfortable typing a web
+address, since the unzipped folder can sit on the desktop as its own
+icon instead.
+
 See `CLAUDE.md` for the full project brief (constraints, architecture,
 roadmap) — that file is written for handing this project to Claude Code.
 
