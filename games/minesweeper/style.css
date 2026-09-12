@@ -125,7 +125,14 @@ body {
   border-color: var(--wood-dark);
 }
 
+.difficulty-label {
+  font-weight: 700;
+  margin: 1em 0 0.4em;
+  text-align: left;
+}
+
 .difficulty-actions { flex-direction: column; align-items: stretch; }
+.difficulty-actions.size-actions { flex-direction: row; }
 .difficulty-actions .btn {
   width: 100%;
   line-height: 1.4;
@@ -134,5 +141,34 @@ body {
   display: block;
   font-weight: 400;
   font-size: 0.85em;
+  color: var(--ink-soft);
+}
+.size-actions .btn[aria-pressed="true"] {
+  background: var(--brass);
+  border-color: var(--wood-dark);
+}
+
+.mine-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.stepper-btn {
+  min-width: 56px;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0.5em 0.9em;
+}
+.mine-count {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  min-width: 3ch;
+  text-align: center;
+}
+.mine-density {
+  margin-top: 0.6em;
+  font-size: 0.9em;
   color: var(--ink-soft);
 }
