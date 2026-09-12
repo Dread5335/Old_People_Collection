@@ -6,9 +6,6 @@
    Follows the same pattern as games/solitaire/game.js:
    - `state` is one plain object; the DOM is purely a rendering of it.
    - render() wipes and rebuilds the board from state after every change.
-   - snapshot() before every mutating move, popped by undo().
-   - Deliberate accessibility choice for this audience: Undo works even
-     after revealing a mine. A slip of the finger shouldn't end the game.
    ============================================================ */
 
 (function () {
@@ -30,7 +27,6 @@
 
   // ---------- state ----------
   let state = null;        // { sizeKey, rows, cols, mineCount, cells, minesPlaced, status, flagsPlaced, revealedCount, flagMode }
-  let history = [];        // stack of deep-cloned states for Undo
   let lastTapInfo = null;  // for double-tap (chord) detection
 
   // Pending selection while the difficulty modal is open, applied on "Start Game".
@@ -41,7 +37,6 @@
     board: document.getElementById('board'),
     status: document.getElementById('statusMsg'),
     minesLeft: document.getElementById('minesLeft'),
-    undoBtn: document.getElementById('undoBtn'),
     flagModeBtn: document.getElementById('flagModeBtn'),
   };
 
@@ -128,7 +123,6 @@
       revealedCount: 0,
       flagMode: false,
     };
-    history = [];
     lastTapInfo = null;
     els.board.style.gridTemplateColumns = `repeat(${size.cols}, var(--cell-size))`;
     setFlagModeButton(false);
@@ -137,20 +131,6 @@
   }
 
   function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
-
-  // ---------- undo support ----------
-  function snapshot() {
-    history.push(JSON.parse(JSON.stringify(state)));
-    if (history.length > 300) history.shift();
-  }
-  function undo() {
-    if (!history.length) return;
-    state = history.pop();
-    els.board.style.gridTemplateColumns = `repeat(${state.cols}, var(--cell-size))`;
-    hideModal('loseModal');
-    updateStatus('Move undone.');
-    render();
-  }
 
   // ---------- reveal / flag logic ----------
   function revealCell(r, c) {
@@ -198,7 +178,6 @@
     const cell = state.cells[r][c];
     if (!cell.revealed || cell.adjacent === 0) return false;
     if (countFlaggedNeighbors(r, c) !== cell.adjacent) return false;
-    snapshot();
     let hitMine = false;
     forEachNeighbor(r, c, (nr, nc) => {
       const n = state.cells[nr][nc];
@@ -225,7 +204,6 @@
 
     if (state.flagMode) {
       if (cell.revealed) return; // nothing to flag on an already-open tile
-      snapshot();
       toggleFlag(r, c);
       updateStatus('');
       render();
@@ -235,7 +213,6 @@
     if (cell.flagged) return; // must unflag before revealing
     if (cell.revealed) return; // tapping an open tile alone does nothing (use double-tap to chord)
 
-    snapshot();
     if (!state.minesPlaced) placeMines(r, c);
     revealCell(r, c);
     const hitMine = cell.mine && cell.revealed;
@@ -285,7 +262,6 @@
     if (msg) els.status.textContent = msg;
     const left = Math.max(0, state.mineCount - state.flagsPlaced);
     els.minesLeft.textContent = String(left);
-    els.undoBtn.disabled = history.length === 0;
   }
 
   function setFlagModeButton(on) {
@@ -339,9 +315,6 @@
   }
 
   // ---------- wiring ----------
-  document.getElementById('undoBtn').addEventListener('click', undo);
-  document.getElementById('loseUndoBtn').addEventListener('click', () => { hideModal('loseModal'); undo(); });
-
   document.getElementById('flagModeBtn').addEventListener('click', () => {
     setFlagModeButton(!state.flagMode);
     render();
