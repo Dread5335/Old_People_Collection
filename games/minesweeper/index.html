@@ -28,7 +28,6 @@
     <div class="statusbar-actions">
       <span class="counter">Mines left: <span id="minesLeft">0</span></span>
       <button id="flagModeBtn" class="btn" aria-pressed="false">🚩 Flag Mode: Off</button>
-      <button id="undoBtn" class="btn" disabled>Undo</button>
       <button id="rulesBtn" class="btn">How to Play</button>
       <button id="newGameBtn" class="btn primary">New Game</button>
     </div>
@@ -49,9 +48,7 @@
         <strong>Quick-clear:</strong> if you've flagged all the mines
         around a revealed number, tap that number twice quickly to open
         every other tile around it at once.<br><br>
-        Reveal every safe tile without revealing a mine to win. If you tap
-        a mine by accident, tap <strong>Undo</strong> to take it back —
-        no need to lose the whole game over a slip of the finger.
+        Reveal every safe tile without revealing a mine to win.
       </p>
       <div class="modal-actions">
         <button id="closeRulesBtn" class="btn primary">Got it</button>
@@ -102,14 +99,13 @@
   <div id="loseModal" class="modal-backdrop" hidden>
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="loseTitle">
       <h2 id="loseTitle">That tile had a mine 💣</h2>
-      <p>You can undo that last tap and keep going, or start fresh.</p>
+      <p>Better luck on the next board.</p>
       <div class="modal-actions">
-        <button id="loseUndoBtn" class="btn primary">Undo That Tap</button>
-        <button id="loseNewGameBtn" class="btn">New Game</button>
+        <button id="loseNewGameBtn" class="btn primary">New Game</button>
       </div>
     </div>
   </div>
 
-  <script src="game.js?v=3"></script>
+  <script src="game.js?v=4"></script>
 </body>
 </html>
