@@ -64,13 +64,25 @@
     <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="difficultyTitle">
       <h2 id="difficultyTitle">Start a new game</h2>
       <p id="difficultyWarning" hidden>Your current game will be lost.</p>
-      <div class="modal-actions difficulty-actions">
-        <button id="diffEasyBtn" class="btn primary">Easy<br><span class="sub">9 &times; 9, 10 mines</span></button>
-        <button id="diffMediumBtn" class="btn primary">Medium<br><span class="sub">12 &times; 12, 24 mines</span></button>
-        <button id="diffHardBtn" class="btn primary">Hard<br><span class="sub">16 &times; 16, 40 mines</span></button>
+
+      <p class="difficulty-label">Board size</p>
+      <div class="modal-actions difficulty-actions size-actions">
+        <button id="sizeSmallBtn" class="btn" aria-pressed="false">Small<br><span class="sub">9 &times; 9</span></button>
+        <button id="sizeMediumBtn" class="btn" aria-pressed="false">Medium<br><span class="sub">12 &times; 12</span></button>
+        <button id="sizeLargeBtn" class="btn" aria-pressed="false">Large<br><span class="sub">16 &times; 16</span></button>
       </div>
+
+      <p class="difficulty-label">Mines</p>
+      <div class="mine-stepper">
+        <button id="mineDownBtn" class="btn stepper-btn" aria-label="Fewer mines">&minus;</button>
+        <span id="mineCountDisplay" class="mine-count" aria-live="polite">10</span>
+        <button id="mineUpBtn" class="btn stepper-btn" aria-label="More mines">+</button>
+      </div>
+      <p id="mineDensityMsg" class="mine-density">Easy &mdash; about 12% of tiles are mines.</p>
+
       <div class="modal-actions">
         <button id="diffCancelBtn" class="btn">Cancel</button>
+        <button id="diffStartBtn" class="btn primary">Start Game</button>
       </div>
     </div>
   </div>
