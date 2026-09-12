@@ -4,8 +4,6 @@ A small suite of ad-free, distraction-free games — starting with Klondike
 Solitaire — built for people who don't want to gamble with fake "Your PC is
 infected" popups just to play a game of cards.
 
-**Play it now, no install:** https://dread5335.github.io/Old_People_Collection/
-
 **Download a copy to keep and play offline:** grab the zip from the
 [latest release](../../releases/latest). Unzip it anywhere and open
 `index.html` — no internet connection is needed or used, ever. This is
@@ -41,9 +39,9 @@ below is a deliberate product decision, not a default:
   labels, a large-text toggle, tap-to-select instead of finicky
   drag-and-drop.
 
-The goal is a small library of games — Solitaire is done, Mahjong and
-Minesweeper are next — that you could hand to your grandparent, walk away,
-and never worry about what they might accidentally click.
+The goal is a small library of games — Solitaire and Minesweeper are done,
+Mahjong is next — that you could hand to your grandparent, walk away, and
+never worry about what they might accidentally click.
 
 **Found a bug?** [Open an issue](../../issues) and I'll take a look when I
 get a chance — no promises on turnaround, but I do read them.
@@ -55,19 +53,6 @@ Mahjong, Minesweeper, checkers, hearts, dominoes, that kind of thing. If
 you've got a suggestion in that spirit, [open an issue](../../issues) for
 it — genuinely open to ideas, just keep it in the "quiet" lane rather than
 something that needs real-time reflexes or a tutorial.
-
-## Running it
-
-No build step, no install. Just open `index.html` in a browser.
-
-If a game doesn't load correctly straight from `file://`, serve the folder
-locally instead (still fully offline, this just avoids browser file:// quirks):
-
-```bash
-cd quiet-games-suite
-python3 -m http.server 8000
-# then open http://localhost:8000
-```
 
 ## Testing
 
