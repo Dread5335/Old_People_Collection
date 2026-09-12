@@ -1,9 +1,9 @@
-# Quiet Games — project brief
+# Old People Collection — project brief
 
 ## What this is
 
-A suite of simple, ad-free web games (Solitaire, and eventually Mahjong and
-Minesweeper) built for people — especially older users — who get targeted by
+A suite of simple, ad-free web games (Solitaire, Minesweeper, and Mahjong)
+built for people — especially older users — who get targeted by
 predatory ad networks on free game sites (fake "your PC is infected" popups,
 autoplaying video ads, deceptive "click here" buttons disguised as game
 controls). The whole point of the project is what it *doesn't* have: no ads,
@@ -58,9 +58,14 @@ quiet-games-suite/
       index.html
       style.css
       game.js               # fully playable
+    mahjong/
+      index.html
+      style.css
+      game.js               # fully playable
   test/
     smoke.js                # headless jsdom smoke test (solitaire)
     minesweeper-smoke.js     # headless jsdom smoke test (minesweeper)
+    mahjong-smoke.js         # headless jsdom smoke test (mahjong)
   README.md
 ```
 
@@ -73,8 +78,20 @@ quiet-games-suite/
   Mode" toggle button in place of right-click/long-press (accessible on
   touch), double-tap chording, win/lose modals, large-text toggle.
   No Undo — tapping a mine ends the game, same as classic Minesweeper.
-- **Mahjong is not started.** It's still listed as a greyed-out
-  "Coming soon" tile on the hub page.
+- **Mahjong (tile-matching) is done and playable.** Board-size picker
+  (Small 52 tiles, Medium 116, Large 216) laid out as a stepped pyramid
+  of layers; tap two tiles with the same rank+suit (reusing Solitaire's
+  card glyphs, not the Unicode Mahjong-tile block, which has weak font
+  support) to clear them. Only "free" tiles (nothing on top, not boxed
+  in on both sides) are tappable. The board is generated to always be
+  solvable at the start (see the big comment atop `game.js`), and a
+  "Shuffle Tiles" button/modal handles the case where the player's own
+  moves paint them into a corner later. No Undo, same reasoning as
+  Minesweeper.
+- **All three games show a difficulty/size picker immediately on first
+  load**, not only from "New Game" — don't regress that; it was a
+  deliberate fix after Minesweeper originally only showed it from New
+  Game and that confused first-time players.
 - **No persistence yet.** Refreshing the page loses the current game.
   `localStorage` would be fine to add (it's on-device, not tracking) but
   hasn't been built.
@@ -107,23 +124,33 @@ Solitaire's `game.js` is a single IIFE, no imports, no build tooling:
 - `render()` wipes and rebuilds the relevant DOM from `state` after every
   change. Not the most "efficient" possible approach, but simple to
   reason about and plenty fast for games this size — keep this pattern
-  for Mahjong/Minesweeper rather than optimizing prematurely.
+  for future games rather than optimizing prematurely.
 - `snapshot()` before every mutating move, pushed onto a `history` stack,
-  popped by `undo()`. Every game should offer Undo the same way.
+  popped by `undo()` — this is Solitaire's pattern, but Undo is a
+  per-game call, not a hard rule: Minesweeper and Mahjong deliberately
+  don't have it (undoing a mine, or an unfavorable tile match, would
+  undercut the actual game). Add it only where taking back a move fits
+  the game.
 - Tap/click handling is centralized (`handleCardTap`, `handlePileTap`)
   rather than scattered inline handlers, and includes manual double-tap
   detection (not just `dblclick`) so it works on touch, not just desktop.
 
 ## Testing
 
-`test/smoke.js` loads the real `index.html` + `game.js` into a headless
-DOM via `jsdom` and clicks through a handful of core interactions (draw,
-select, move attempt, undo, new game, modal open/close, text-size toggle)
-to catch runtime errors. It's a smoke test, not full coverage.
+Each game has a `test/<game>-smoke.js` that loads its real `index.html` +
+`game.js` into a headless DOM via `jsdom` and clicks through a handful of
+core interactions (deal/draw, select, a move or match attempt, new game,
+modal open/close, text-size toggle) to catch runtime errors. These are
+smoke tests, not full coverage — they've caught real regressions before
+(see git history), but they run in jsdom, which doesn't apply CSS layout,
+so a visual-only bug (wrong thing shown, wrong thing hidden) can pass a
+green smoke test. Always also sanity-check a change in an actual browser.
 
 ```bash
 npm install jsdom --no-save
 node test/smoke.js
+node test/minesweeper-smoke.js
+node test/mahjong-smoke.js
 ```
 
 When adding a new game, add an equivalent `test/<game>-smoke.js` that at
@@ -137,7 +164,7 @@ Static HTML/CSS/JS wraps cleanly with [Capacitor](https://capacitorjs.com/):
 ```bash
 npm init -y
 npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor/ios
-npx cap init "Quiet Games" "com.yourname.quietgames"
+npx cap init "Old People Collection" "com.yourname.oldpeoplecollection"
 npx cap add android
 npx cap add ios
 ```
@@ -149,10 +176,14 @@ require a privacy policy URL even for apps that collect nothing).
 
 ## Suggested next steps
 
-1. Add Mahjong (tile-matching) under `games/mahjong/`, reusing
-   `shared/theme.css` and the `state` + `render()` + `snapshot()/undo()`
-   pattern above.
-2. Add a tile for it on the hub `index.html` (remove the `soon` class,
-   point the link at the new game) — same as was done for Minesweeper.
-3. Consider `localStorage`-based "resume last game" — on-device only, so
+All three planned games (Solitaire, Minesweeper, Mahjong) are done. From
+here:
+
+1. Consider `localStorage`-based "resume last game" — on-device only, so
    it doesn't violate the no-tracking constraint.
+2. A downloadable release (see the GitHub Releases page) exists for
+   offline/local play; keep it in sync by re-zipping the runtime files
+   (not `test/` or this file) after meaningful changes, bumping the
+   version tag.
+3. Beyond that, new game ideas should stay in "quiet game" territory —
+   see the README's "Got a game idea?" section for the bar to clear.
