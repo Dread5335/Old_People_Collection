@@ -1,8 +1,9 @@
-# Quiet Games
+# Old People Collection
 
-A small suite of ad-free, distraction-free games — starting with Klondike
-Solitaire — built for people who don't want to gamble with fake "Your PC is
-infected" popups just to play a game of cards.
+A small suite of ad-free, distraction-free games — Klondike Solitaire,
+Minesweeper, and Mahjong (tile-matching) — built for people who don't want
+to gamble with fake "Your PC is infected" popups just to play a game of
+cards.
 
 **Download a copy to keep and play offline:** grab the zip from the
 [latest release](../../releases/latest). Unzip it anywhere and open
@@ -16,7 +17,7 @@ roadmap) — that file is written for handing this project to Claude Code.
 
 ## Mission
 
-Quiet Games exists because a lot of the "free games" corner of the internet
+Old People Collection exists because a lot of the "free games" corner of the internet
 has quietly become hostile territory, and the people most often on the
 receiving end are the ones least equipped to spot it — grandparents, parents
 who didn't grow up with this stuff, anyone who just wants to play a hand of
@@ -39,8 +40,8 @@ below is a deliberate product decision, not a default:
   labels, a large-text toggle, tap-to-select instead of finicky
   drag-and-drop.
 
-The goal is a small library of games — Solitaire and Minesweeper are done,
-Mahjong is next — that you could hand to your grandparent, walk away, and
+The goal is a small library of games — Solitaire, Minesweeper, and Mahjong
+are all done — that you could hand to your grandparent, walk away, and
 never worry about what they might accidentally click.
 
 **Found a bug?** [Open an issue](../../issues) and I'll take a look when I
@@ -48,15 +49,17 @@ get a chance — no promises on turnaround, but I do read them.
 
 **Got a game idea?** This suite is meant to stay in "quiet game" territory on
 purpose — simple rules, low pressure, nothing twitchy or time-pressured,
-nothing that needs an explanation longer than a sentence or two. Solitaire,
-Mahjong, Minesweeper, checkers, hearts, dominoes, that kind of thing. If
-you've got a suggestion in that spirit, [open an issue](../../issues) for
-it — genuinely open to ideas, just keep it in the "quiet" lane rather than
-something that needs real-time reflexes or a tutorial.
+nothing that needs an explanation longer than a sentence or two. Checkers,
+hearts, dominoes, that kind of thing. If you've got a suggestion in that
+spirit, [open an issue](../../issues) for it — genuinely open to ideas,
+just keep it in the "quiet" lane rather than something that needs
+real-time reflexes or a tutorial.
 
 ## Testing
 
 ```bash
 npm install jsdom --no-save
 node test/smoke.js
+node test/minesweeper-smoke.js
+node test/mahjong-smoke.js
 ```
