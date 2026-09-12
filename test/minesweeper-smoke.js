@@ -44,9 +44,13 @@ doc.getElementById('closeRulesBtn').dispatchEvent(new window.Event('click', { bu
 // Large-text toggle.
 doc.getElementById('textSizeBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
 
-// New Game -> difficulty modal -> Medium.
+// New Game -> difficulty modal -> pick Medium size, bump mines up, start.
 doc.getElementById('newGameBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
-doc.getElementById('diffMediumBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
-console.log('Board cells after switching to Medium:', doc.querySelectorAll('#board .cell').length, '(expect 144, 12x12)');
+doc.getElementById('sizeMediumBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
+console.log('Mine count after selecting Medium:', doc.getElementById('mineCountDisplay').textContent, '(expect 25, the Medium default)');
+doc.getElementById('mineUpBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
+console.log('Mine count after one +:', doc.getElementById('mineCountDisplay').textContent, '(expect 30)');
+doc.getElementById('diffStartBtn').dispatchEvent(new window.Event('click', { bubbles: true }));
+console.log('Board cells after starting Medium game:', doc.querySelectorAll('#board .cell').length, '(expect 144, 12x12)');
 
 console.log('SMOKE TEST PASSED');
