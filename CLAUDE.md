@@ -67,13 +67,12 @@ quiet-games-suite/
 - **Solitaire (Klondike) is done and playable.** Draw pile, waste,
   4 foundations, 7 tableau columns, undo, move counter, win detection,
   "How to Play" modal, new-game confirmation modal, large-text toggle.
-- **Minesweeper is done and playable.** Easy/Medium/Hard difficulty
-  picker (9×9/10, 12×12/24, 16×16/40), flood-fill reveal, a "Flag Mode"
-  toggle button in place of right-click/long-press (accessible on touch),
-  double-tap chording, win/lose modals, large-text toggle. Deliberately
-  lets you **Undo a mine reveal** — an accidental tap shouldn't end the
-  game for this audience, so Undo isn't purely cosmetic here the way it
-  might be in a "real" Minesweeper.
+- **Minesweeper is done and playable.** Board-size picker (Small 9×9,
+  Medium 12×12, Large 16×16) plus an independent mine-count +/- stepper
+  (bounded per size, roughly 6%-35% density), flood-fill reveal, a "Flag
+  Mode" toggle button in place of right-click/long-press (accessible on
+  touch), double-tap chording, win/lose modals, large-text toggle.
+  No Undo — tapping a mine ends the game, same as classic Minesweeper.
 - **Mahjong is not started.** It's still listed as a greyed-out
   "Coming soon" tile on the hub page.
 - **No persistence yet.** Refreshing the page loses the current game.
