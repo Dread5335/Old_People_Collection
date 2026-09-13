@@ -1,0 +1,78 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'shared/**'
+      - 'games/**'
+      - '.github/workflows/android-apk.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Only the actual runtime files go into the app — not README/CLAUDE.md/test/.
+      - name: Stage web assets
+        run: |
+          mkdir -p www
+          cp index.html www/
+          cp -r shared www/
+          cp -r games www/
+
+      - name: Install Capacitor
+        run: |
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+
+      - name: Init Capacitor project
+        run: npx cap init "Old People Collection" "com.oldpeoplecollection.games" --web-dir=www
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Sync web assets into the Android project
+        run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Rename APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk OldPeopleCollection-debug.apk
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OldPeopleCollection-debug-apk
+          path: OldPeopleCollection-debug.apk
+
+      - name: Publish to the android-latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-latest
+          name: "Android (debug APK)"
+          body: |
+            Auto-built debug APK for sideloading on Android — **not** signed for the Play Store.
+
+            This is rebuilt automatically from the latest `main` branch whenever the game files change, so it always reflects the current web version. To install: download the APK to your phone, then open it (you'll need to allow "install from unknown sources" for your browser/file manager once).
+          files: OldPeopleCollection-debug.apk
+          prerelease: true
