@@ -26,7 +26,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       # Only the actual runtime files go into the app — not README/CLAUDE.md/test/.
       - name: Stage web assets
