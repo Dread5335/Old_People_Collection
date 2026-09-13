@@ -305,7 +305,10 @@
       div.style.top = (padLift + t.row * step - t.layer * LIFT) + 'px';
       div.style.width = cell + 'px';
       div.style.height = cell + 'px';
-      div.style.zIndex = String(t.layer * 1000 + t.row * 100 + t.col);
+      // Just needs to preserve layer order (higher layers on top of lower
+      // ones) — kept small and well below shared/theme.css's
+      // .modal-backdrop z-index (50), or tiles render on top of modals.
+      div.style.zIndex = String(t.layer + 1);
       div.innerHTML = `<span class="corner">${rankLabel(t.face.rank)}</span><span class="suit-big">${SUIT_GLYPH[t.face.suit]}</span>`;
       div.tabIndex = 0;
       div.setAttribute('role', 'button');
