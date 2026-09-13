@@ -47,6 +47,24 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
+      # Capacitor's generated template can pull an old kotlin-stdlib-jdk7/jdk8
+      # (1.6.21) alongside the newer merged kotlin-stdlib (1.8.22), which
+      # Android's duplicate-class check rejects. Force one consistent version.
+      - name: Fix Kotlin stdlib version conflict
+        run: |
+          cat >> android/build.gradle << 'EOF'
+
+          allprojects {
+              configurations.all {
+                  resolutionStrategy {
+                      force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22'
+                      force 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22'
+                      force 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+                  }
+              }
+          }
+          EOF
+
       - name: Sync web assets into the Android project
         run: npx cap sync android
 
